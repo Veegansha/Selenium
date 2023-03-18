@@ -1,0 +1,55 @@
+package practiceTesting;
+
+import java.util.Iterator;
+import java.util.Set;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class WindowsHandling {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		System.setProperty("webdriver.chrome.driver",
+				"C:\\chromedriver.exe");
+		WebDriver driver=new ChromeDriver();
+		driver.manage().window().maximize();
+
+		driver.navigate().to("https://www.leafground.com/window.xhtml");
+
+		WebElement first= driver.findElement(By.xpath("//*[@id=\"j_idt88:j_idt93\"]/span[2]"));
+		first.click();
+		
+		String both= driver.getWindowHandle();
+		
+		for(String handle : driver.getWindowHandles()) {
+	        if (!handle.equals(both)) {
+	            driver.switchTo().window(handle);
+	            driver.close();
+	        }
+	    }
+
+	    driver.switchTo().window(both);
+	    
+	    WebElement second= driver.findElement(By.xpath("//*[@id=\"j_idt88:j_idt91\"]/span"));
+	    second.click();
+	    
+	    Set<String> multi= driver.getWindowHandles();
+	    int size=multi.size();
+	    System.out.println("Count is : "+size);
+	    
+	    for (String two : multi) {
+	    	if (!two.equalsIgnoreCase(both)) {
+	    		driver.switchTo().window(two);
+	    		driver.close();
+				
+			}
+			
+		}
+		
+	}
+
+}
