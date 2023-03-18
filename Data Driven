@@ -1,0 +1,73 @@
+package UiComponents;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Driver;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+
+public class DataSender {
+
+
+
+	@DataProvider(name="dataProviderrs")
+	public String[][] logindatadataprovider() throws BiffException, IOException {
+		//return getexceldata();
+		data= getexceldata();
+		return data;
+
+	}
+	String[][] data=null;
+	public String[][] getexceldata() throws BiffException, IOException {
+		FileInputStream fileinpstream =new FileInputStream("C:\\DataDriven\\inputdatas.xls");;
+
+		Workbook workbook = Workbook.getWorkbook(fileinpstream);
+		//Sheet sheet =
+		Sheet sheet=	workbook.getSheet(0);
+		int totalrows= sheet.getRows();
+		int totalcolumn= sheet.getColumns();
+		String[][] string1 =new String[totalrows-1][totalcolumn];
+
+		for (int i = 1; i < totalrows; i++) {
+			for (int j = 0; j < totalcolumn; j++) {
+				string1[i-1][j]= sheet.getCell(j,i).getContents();
+
+			}
+		}
+		return string1;
+	}
+
+
+
+	@Test(dataProvider =   "dataProviderrs")
+	public void facebookDataDriven(String emailid, String password) {
+		System.setProperty("webdriver.chrome.driver",
+				"C:\\chromedriver.exe");
+		WebDriver driver=new ChromeDriver();
+		driver.manage().window().maximize();
+
+		driver.navigate().to("https://www.facebook.com/");
+		WebElement tab1= driver.findElement(By.id("email"));
+
+		tab1.sendKeys(emailid);
+
+		WebElement tab2= driver.findElement(By.id("pass"));
+		tab2.sendKeys(password);
+		WebElement tab3= driver.findElement(By.name("login"));
+		tab3.click();
+	}
+}
